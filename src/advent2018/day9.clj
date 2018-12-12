@@ -139,7 +139,7 @@
   (loop [player 0
          marble 1
          scores (into [] (take n-players (repeatedly (constantly 0))))
-         marbles (root 0)]
+         marbles (ll-root 0)]
     (if (> marble last-marble)
       (apply max scores)
       (if (= 0 (mod marble 23))
