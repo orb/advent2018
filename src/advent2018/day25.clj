@@ -28,10 +28,8 @@
   (instaparse/transform transform (instaparse/parse grammar input)))
 
 
-
 (defn distance [p1 p2]
-  (reduce + (map #(Math/abs (- %1 %2)) p1 p2)))
-
+  (reduce + (map #(Math/abs ^int (- %1 %2)) p1 p2)))
 
 (defn find-reachable
   "given a graph, return a set of nodes reachable from a given node"
@@ -50,13 +48,19 @@
                    (into neighbors))
                (conj visited visit))))))
 
+(defn build-graph [points]
+  (reduce merge
+          (for [i1 (range (count points))
+                i2 (range (inc i1) (count points))
+                :let [p1 (points i1)
+                      p2 (points i2)]
+                :when (<= (distance p1 p2) 3)]
+            [[p1 p2]
+             [p2 p1]])))
+
 (defn part1 [input]
   (let [points (parse input)
-        graph (for [p1 points
-                    p2 points
-                    :when (and (not= p1 p2)
-                               (<= (distance p1 p2) 3))]
-                [p1 p2])]
+        graph (build-graph points)]
     (loop [groups 0
            unvisited (set points)]
       ;; pick an unvisited point
